@@ -285,10 +285,11 @@ export class Messages {
                 Cache.del(`time_${ts}_msg_id_${gameID}`);
               });
 
-              if (!getPlayersCount || getPlayersCount.length < 4)
-                return ctx.reply(
-                  `⚠️ There's not enough players to start the game.`,
-                );
+              if (!getPlayersCount || getPlayersCount.length < 4) {
+                ctx.reply(`⚠️ There's not enough players to start the game.`);
+                GameHelper.removeProperty(chatID, gameID);
+                return;
+              }
 
               Cache.set(`begin_${gameID}`, true);
               Game.initialize(chatID, bot);
