@@ -102,6 +102,8 @@ export class Game {
       });
 
       const nextTimeout = setTimeout(() => {
+        if (Cache.get(`has_trigger_${gameID}`)) return;
+        Cache.set(`has_trigger_2_${gameID}`, true);
         this.next(chatId, gameID, bot);
       }, answerTime * 1000);
       Cache.set<NodeJS.Timeout>(`game_next_${gameID}`, nextTimeout);

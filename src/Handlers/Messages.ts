@@ -338,6 +338,8 @@ export class Messages {
         answerData ===
         Cache.get<Array<string>>(`native_players_${gameID}`)!.length
       ) {
+        if (Cache.get(`has_trigger_2_${gameID}`)) return;
+        Cache.set(`has_trigger_${gameID}`, true);
         setTimeout(() => {
           clearTimeout(Cache.get<NodeJS.Timeout>(`game_next_${gameID}`));
           Game.next(groupID, gameID, bot);

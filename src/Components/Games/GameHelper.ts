@@ -109,6 +109,8 @@ export class GameHelper {
       "join_interval",
       "days",
       "idle",
+      "has_trigger",
+      "has_trigger_2",
     ];
 
     propertyPrefix.forEach((prefix) => {
