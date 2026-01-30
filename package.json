@@ -1,0 +1,32 @@
+{
+  "dependencies": {
+    "@elysiajs/node": "^1.4.3",
+    "axios": "^1.13.4",
+    "dotenv": "^17.2.3",
+    "elysia": "^1.4.22",
+    "grammy": "^1.39.3",
+    "node-cache": "^5.1.2"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^10.2.0",
+    "@types/node": "^25.0.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "name": "spygame",
+  "version": "1.0.0",
+  "description": "A simple spy game bot on Telegram.",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tsc",
+    "dev": "npx tsc && node dist/index.js",
+    "start": "node dist/index.js"
+  },
+  "keywords": [
+    "telegram",
+    "spygame"
+  ],
+  "author": "Kevin :D",
+  "license": "ISC",
+  "type": "commonjs"
+}
