@@ -64,7 +64,24 @@ export class CallbackQuery {
             text: `⚠️ Unauthorized.`,
             show_alert: true,
           });
-        ctx.editMessageText(`Game cancelled.`);
+        ctx.reply(`Game cancelled.`);
+        clearInterval(Cache.get<NodeJS.Timeout>(`join_interval_${gameID}`));
+        const tf = [90, 60, 30];
+        tf.map((ts) => {
+          bot.api
+            .deleteMessage(
+              chatID,
+              Number(Cache.get(`time_${ts}_msg_id_${gameID}`)),
+            )
+            .catch(() => {});
+          Cache.del(`time_${ts}_msg_id_${gameID}`);
+        });
+        bot.api
+          .deleteMessage(
+            chatID,
+            Number(Cache.get(`join_message_id_${groupID}`)),
+          )
+          .catch(() => {});
         GameHelper.removeProperty(chatID, gameID);
         return;
       }
