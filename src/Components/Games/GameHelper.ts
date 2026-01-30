@@ -223,7 +223,7 @@ export class GameHelper {
   }
 
   static removePlayerPropertyMap(gameID: string) {
-    const playersList = Cache.get<Array<string>>(`players_${gameID}`);
+    const playersList = Cache.get<Array<string>>(`native_players_${gameID}`);
     playersList!.map((playerId) => {
       this.removePlayerProperty(playerId, gameID);
     });
