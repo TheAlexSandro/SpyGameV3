@@ -203,7 +203,7 @@ export class Messages {
               { parse_mode: "HTML" },
             );
           }
-          if (Cache.get(`game_id_${chatID}`)) {
+          if (Cache.get(`game_id_${chatID}`) || Cache.get(`joined_global_${userID}`)) {
             Cache.del(`checking_${chatID}`);
             bot.api
               .deleteMessage(chatID, Number(resultMsg.message_id))
