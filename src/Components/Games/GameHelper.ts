@@ -222,6 +222,13 @@ export class GameHelper {
     this.removePlayer(playerId, gameID);
   }
 
+  static removePlayerPropertyMap(gameID: string) {
+    const playersList = Cache.get<Array<string>>(`players_${gameID}`);
+    playersList!.map((playerId) => {
+      this.removePlayerProperty(playerId, gameID);
+    });
+  }
+
   static removePlayerProperty(playerId: string, gameID: string) {
     const propertyPrefix = [
       "answer_session",

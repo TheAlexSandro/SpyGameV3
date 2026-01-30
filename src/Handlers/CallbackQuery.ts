@@ -20,11 +20,12 @@ export class CallbackQuery {
       const gameID = match[2];
       const groupID = String(Cache.get(`chat_id_${gameID}`) ?? null);
       if (groupID == "null") {
-        ctx.deleteMessage().catch(() => {});
-        return ctx.answerCallbackQuery({
+        ctx.answerCallbackQuery({
           text: `⚠️ There's no a game with this ID.`,
           show_alert: true,
         });
+        ctx.deleteMessage().catch(() => {});
+        return;
       }
 
       if (act === "begin") {
@@ -82,6 +83,7 @@ export class CallbackQuery {
             Number(Cache.get(`join_message_id_${groupID}`)),
           )
           .catch(() => {});
+        GameHelper.removePlayerPropertyMap(gameID);
         GameHelper.removeProperty(chatID, gameID);
         return;
       }

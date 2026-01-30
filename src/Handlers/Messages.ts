@@ -287,6 +287,7 @@ export class Messages {
 
               if (!getPlayersCount || getPlayersCount.length < 4) {
                 ctx.reply(`⚠️ There's not enough players to start the game.`);
+                GameHelper.removePlayerPropertyMap(gameID);
                 GameHelper.removeProperty(chatID, gameID);
                 return;
               }
