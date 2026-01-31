@@ -229,10 +229,9 @@ export class Game {
         ? `🤷‍♂️ <b>No Defendant!</b>\nThe civillians can't make decisions, no defendant should be sentenced to death.`
         : `🤷‍♂️ <b>Taking decision failed!</b>\nThe civillians can't make decisions, no one is sentenced to death.`;
 
-      bot.api.sendMessage(chatId, message, { parse_mode: "HTML" });
-      setTimeout(() => {
+      bot.api.sendMessage(chatId, message, { parse_mode: "HTML" }).then(() => {
         this.initialize(chatId, bot);
-      }, 1000);
+      });
       return;
     }
 
@@ -266,26 +265,34 @@ export class Game {
     bot: Bot,
   ) {
     Cache.del(`confirms_${gameID}`);
-    bot.api.editMessageText(
-      chatId,
-      Number(Cache.get(`confirms_msg_id_${gameID}`)),
-      `📝 <b>Confirmation</b>\nThe defendant <a href='tg://user?id=${defendant}'>${Cache.get(`name_${defendant}_${gameID}`)}</a> will be executed, are you sure?\n\nIt's done...`,
-      { parse_mode: "HTML" },
-    );
-    const getYes = Number(Cache.get(`confirm_yes_${gameID}`) ?? 0);
-    const getNo = Number(Cache.get(`confirm_no_${gameID}`) ?? 0);
+    bot.api
+      .deleteMessage(chatId, Number(Cache.get(`confirms_msg_id_${gameID}`)))
+      .catch(() => {});
+    bot.api
+      .sendMessage(
+        chatId,
+        `📝 <b>Confirmation</b>\nThe defendant <a href='tg://user?id=${defendant}'>${Cache.get(`name_${defendant}_${gameID}`)}</a> will be executed, are you sure?\n\nIt's done...`,
+        { parse_mode: "HTML" },
+      )
+      .then(() => {
+        const getYes = Number(Cache.get(`confirm_yes_${gameID}`) ?? 0);
+        const getNo = Number(Cache.get(`confirm_no_${gameID}`) ?? 0);
 
-    Cache.del(`confirm_yes_${gameID}`);
-    Cache.del(`confirm_no_${gameID}`);
-    if (getYes < getNo || getYes == getNo) {
-      var message = `🤷‍♂️ <b>Taking decision failed!</b>\nThe civillians can't make choices, the defendant is safe.\n\n✅ ${getYes} | ❌ ${getNo}`;
+        Cache.del(`confirm_yes_${gameID}`);
+        Cache.del(`confirm_no_${gameID}`);
+        if (getYes < getNo || getYes == getNo) {
+          var message = `🤷‍♂️ <b>Taking decision failed!</b>\nThe civillians can't make choices, the defendant is safe.\n\n✅ ${getYes} | ❌ ${getNo}`;
 
-      bot.api.sendMessage(chatId, message, { parse_mode: "HTML" });
-      this.initialize(chatId, bot);
-      return;
-    }
+          bot.api
+            .sendMessage(chatId, message, { parse_mode: "HTML" })
+            .then(() => {
+              this.initialize(chatId, bot);
+            });
+          return;
+        }
 
-    GameHelper.execute(defendant, chatId, gameID, bot, getYes, getNo);
+        GameHelper.execute(defendant, chatId, gameID, bot, getYes, getNo);
+      });
     return;
   }
 

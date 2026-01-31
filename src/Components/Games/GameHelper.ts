@@ -192,28 +192,29 @@ export class GameHelper {
     getNo: number,
   ) {
     const name = Cache.get<string>(`name_${playerId}_${gameID}`);
-    bot.api.sendMessage(
-      chatId,
-      `🔫 Executing <a href='tg://user?id=${playerId}'>${name}</a>...\n\n✅ ${getYes} | ❌ ${getNo}`,
-      { parse_mode: "HTML" },
-    );
-    this.pullPlayer(playerId, gameID);
-    setTimeout(() => {
-      bot.api.sendMessage(
+    bot.api
+      .sendMessage(
         chatId,
-        `<a href='tg://user?id=${playerId}'>${name}</a> was a ${Cache.get(`role_${playerId}_${gameID}`)}`,
+        `🔫 Executing <a href='tg://user?id=${playerId}'>${name}</a>...\n\n✅ ${getYes} | ❌ ${getNo}`,
         { parse_mode: "HTML" },
-      );
-      this.removePlayerProperty(playerId, gameID);
-      setTimeout(() => {
+      )
+      .then(() => {
+        this.pullPlayer(playerId, gameID);
+        return bot.api.sendMessage(
+          chatId,
+          `<a href='tg://user?id=${playerId}'>${name}</a> was a ${Cache.get(`role_${playerId}_${gameID}`)}`,
+          { parse_mode: "HTML" },
+        );
+      })
+      .then(() => {
+        this.removePlayerProperty(playerId, gameID);
         const isDone = this.checkWinner(gameID);
         if (isDone !== false && isDone !== "next") {
           Game.finish(chatId, gameID, bot);
         } else {
           Game.initialize(chatId, bot);
         }
-      }, 1000);
-    }, 1000);
+      });
   }
 
   static pullPlayer(playerId: string, gameID: string) {
