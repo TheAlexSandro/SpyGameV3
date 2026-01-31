@@ -120,7 +120,20 @@ export class Game {
   }
 
   static next(chatId: string, gameID: string, bot: Bot) {
-    Cache.del(`idle_${gameID}`);
+    const propertyData = [
+      "idle",
+      "has_trigger",
+      "has_trigger_2",
+      "answer_count",
+      "vote",
+      "vote_list",
+      "vote_count",
+      "confirm_count",
+    ];
+
+    propertyData.map((property) => {
+      Cache.del(`${property}_${gameID}`);
+    });
     const gameIDs = Cache.get<string>(`game_id_${chatId}`);
     const getPlayersList = Cache.get<Array<string>>(`players_${gameID}`);
     if (!gameIDs) return;
@@ -151,7 +164,6 @@ export class Game {
           return;
         }
 
-        Cache.del(`answer_count_${gameID}`);
         var message = `<b>Players:</b>`;
         getPlayersList.map((playerId) => {
           Cache.del(`answer_session_${playerId}`);
@@ -194,9 +206,6 @@ export class Game {
       reply_markup: markup.inlineKeyboard(keyb),
     });
     Cache.set(`vote_${gameID}`, true);
-    Cache.del(`vote_list_${gameID}`);
-    Cache.del(`vote_count_${gameID}`);
-    Cache.del(`confirm_count_${gameID}`);
     getPlayersList.map((playerId) => {
       GameHelper.sendCandidate(playerId, getPlayersList, gameID, bot);
     });
@@ -261,7 +270,7 @@ export class Game {
       chatId,
       Number(Cache.get(`confirms_msg_id_${gameID}`)),
       `📝 <b>Confirmation</b>\nThe defendant <a href='tg://user?id=${defendant}'>${Cache.get(`name_${defendant}_${gameID}`)}</a> will be executed, are you sure?\n\nIt's done...`,
-      { parse_mode: "HTML", reply_markup: { inline_keyboard: [] } },
+      { parse_mode: "HTML" },
     );
     const getYes = Number(Cache.get(`confirm_yes_${gameID}`) ?? 0);
     const getNo = Number(Cache.get(`confirm_no_${gameID}`) ?? 0);

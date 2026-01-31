@@ -336,7 +336,7 @@ export class Messages {
       Cache.set(`answer_count_${gameID}`, answerData);
       if (
         answerData ===
-        Cache.get<Array<string>>(`native_players_${gameID}`)!.length
+        Cache.get<Array<string>>(`players_${gameID}`)!.length
       ) {
         if (Cache.get(`has_trigger_2_${gameID}`)) return;
         Cache.set(`has_trigger_${gameID}`, true);
